@@ -19,23 +19,21 @@ if __name__ == "__main__":
     #Load custom dataset
     train_dataloader, val_dataloader, test_dataloader, _ = FlowCamDataLoader(class_names, image_size, val, test,  batch_size)
 
-    if not isfile("./checkpoints/best.pth"):
+    if not isfile(join(checkpoints_path, "best.pth")):
         print("No checkpoint found! Please run training before evaluating model.")
     else:
         print("Loading checkpoint.")
-        classifier.load_state_dict(torch.load("./checkpoints/best.pth"))
+        classifier.load_state_dict(torch.load(join(checkpoints_path, "best.pth")))
         classifier.eval()
 
         correct_pred = {classname: 0 for classname in class_names}
         total_pred = {classname: 0 for classname in class_names}
         
-        embeddings = []
         with torch.no_grad():
             print("Evaluating model on test data.")
             for data in tqdm(test_dataloader):
                 images, labels = data[0].to(device), data[1].to(device)
-                outputs, activations_second_last_layer = classifier(images)
-                embeddings += [[int(label), 0]  + activation for activation, label in zip(activations_second_last_layer.cpu().detach().tolist(), labels.cpu().detach().tolist())]
+                outputs = classifier(images)
                 _, predictions = torch.max(outputs, 1)
                 for label, prediction in zip(labels, predictions):
                     if label == prediction:

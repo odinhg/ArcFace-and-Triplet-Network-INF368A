@@ -5,7 +5,6 @@ from os.path import join
 from tqdm import tqdm
 from scipy.spatial.distance import cdist
 import matplotlib.pyplot as plt
-from configfile import *
 
 def save_train_plot(filename, train_history):
     # Plot losses and accuracies from training
@@ -19,7 +18,7 @@ def save_train_plot(filename, train_history):
     axes[0].legend(loc="upper right")
     axes[1].legend(loc="upper right")
     fig.tight_layout()
-    plt.savefig(join("figs", "training_plot.png"))
+    plt.savefig(filename)
 
 def compute_average_distances(classes):
     # Compute average Euclidean and angular distances between classes
@@ -43,7 +42,7 @@ def save_distance_figure(distances, class_names, filename):
     ax.set_xticklabels([''] + class_names, rotation=45, ha="left")
     ax.set_yticklabels([''] + class_names)
     fig.tight_layout()
-    plt.savefig(join("figs", filename))
+    plt.savefig(filename)
     plt.cla()
 
 def sample_df(df, n=100):
@@ -52,14 +51,14 @@ def sample_df(df, n=100):
         n = df.shape[0]
     return df.sample(n, random_state=420)
 
-def save_embeddings(classifier, class_idx, dataloader, filename):
+def save_embeddings(classifier, class_idx, dataloader, filename, device):
     # Compute and save embeddings to pickled dataframes
     embeddings = []
     classifier.eval()
     with torch.no_grad():
         for data in tqdm(dataloader):
             images, labels, indicies = data[0].to(device), data[1].to(device), data[2].to(device)
-            _, activations_second_last_layer = classifier(images) #We don't care about predictions, just embeddings
+            activations_second_last_layer = classifier(images, return_activations=True) #We don't care about predictions, just embeddings
             embeddings += [[int(class_idx[label]), int(index)]  + activation for activation, label, index in zip(activations_second_last_layer.cpu().detach().tolist(), labels.cpu().detach().tolist(), indicies.cpu().detach().tolist())]
     df = pd.DataFrame(data=embeddings)
     df.columns = ["label_idx", "image_idx"] + [f"X{i}" for i in range(1, df.shape[1] - 1)]
@@ -83,7 +82,7 @@ class EarlyStopper():
                 return True
         return False
 
-def save_accuracy_plot(accuracies, n_samples, method):
+def save_accuracy_plot(accuracies, n_samples, method, figs_path):
     # Save plot of accuracy vs number of samples in training dataset
     plt.cla()
     y_min = np.min(accuracies) - 0.1
@@ -98,5 +97,6 @@ def save_accuracy_plot(accuracies, n_samples, method):
     plt.grid()
     plt.tight_layout()
     filename = "accuracy_" + method + ".png"
-    plt.savefig(join("figs", filename))
+    filename = join(figs_path, filename)
+    plt.savefig(filename)
     print(f"Saved plot to {filename}.")

@@ -14,11 +14,11 @@ if __name__ == "__main__":
     summary(classifier, (3, *image_size), device=device)
     classifier.to(device)
     #Load custom dataset
-    train_dataloader, val_dataloader, test_dataloader, _ = FlowCamDataLoader(class_names, image_size, val, test,  batch_size)
+    train_dataloader, val_dataloader, test_dataloader = FlowCamDataLoader(class_names, image_size, val, test, batch_size)
 
-    if not isfile(join(checkpoints_path, "best.pth")):
+    if not isfile("./checkpoints/best.pth"):
         print("Training...")
         train_history = train_model(classifier, train_dataloader, val_dataloader, loss_function, optimizer, epochs, device)
-        save_train_plot(join(figs_path, "training_plot.png"), train_history)
+        save_train_plot(join("figs", "training_plot.png"), train_history)
     else:
         print("Chechpoint found! Please delete checkpoint and run training again.")

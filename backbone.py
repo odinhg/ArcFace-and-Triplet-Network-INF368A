@@ -44,10 +44,12 @@ class BackBone(nn.Module):
         self.fc2 = nn.Sequential(
                 nn.Linear(128, self.number_of_classes))
 
-    def forward(self, x):
+    def forward(self, x, return_activations=False):
         x = self.feature_extractor(x)
         x = self.extra_layers(x)
         x = torch.flatten(x, start_dim = 1)
         a = self.fc1(x)
+        if return_activations:
+            return a
         x = self.fc2(a)
-        return x, a
+        return x

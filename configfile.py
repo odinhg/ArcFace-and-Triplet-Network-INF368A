@@ -1,3 +1,33 @@
+from os import listdir, makedirs
+from os.path import isfile, join, exists
+
+configfiles = [f.split(".")[0] for f in listdir("configs") if isfile(join("configs", f)) and f[0].isalpha()]
+
+print("Select configuration file to load:")
+idx = -1
+while not (0 <= idx < len(configfiles)):
+    for i, f in enumerate(configfiles):
+        print(f"[{i}]\t{f}")    
+    idx = int(input("Config: "))
+
+exec(f"from configs.{configfiles[idx]} import *") #Ugly, but it works for now.
+
+config_name = configfiles[idx]
+embeddings_path = join("embeddings", config_name)
+embeddings_file_train = join(embeddings_path, "embeddings_train.pkl")
+embeddings_file_test = join(embeddings_path, "embeddings_test.pkl")
+embeddings_file_unseen = join(embeddings_path, "embeddings_unseen.pkl")
+figs_path = join("figs", config_name)
+checkpoints_path = join("checkpoints", config_name)
+
+if not exists(embeddings_path):
+    makedirs(embeddings_path)
+if not exists(figs_path):
+    makedirs(figs_path)
+if not exists(checkpoints_path):
+    makedirs(checkpoints_path)
+
+"""
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -27,3 +57,4 @@ device = torch.device('cuda:4')
 classifier = BackBone(number_of_classes)
 loss_function = nn.CrossEntropyLoss()
 optimizer = optim.Adam(classifier.parameters(), lr=lr)
+"""

@@ -15,11 +15,11 @@ from configfile import *
 from utilities import save_accuracy_plot
 
 if __name__ == "__main__":
-    if not isfile("./embeddings_unseen.pkl"):
+    if not isfile(embeddings_file_unseen):
         exit("Embeddings not found. Please run embed.py first!")
     
     # Load saved embeddings of the data with unseen classes and split
-    df = pd.read_pickle("embeddings_unseen.pkl")
+    df = pd.read_pickle(embeddings_file_unseen)
     train_embeddings, test_embeddings = train_test_split(df, test_size=0.35, shuffle=True, random_state=0)
 
     svm_classifier = make_pipeline(StandardScaler(), SVC(gamma="auto"))
@@ -59,6 +59,6 @@ if __name__ == "__main__":
         knn_accuracies.append(knn_accuracy)
         n_samples.append(n)
 
-    save_accuracy_plot(svc_accuracies, n_samples, "SVC")
-    save_accuracy_plot(linear_accuracies, n_samples, "Linear")
-    save_accuracy_plot(knn_accuracies, n_samples, "kNN")
+    save_accuracy_plot(svc_accuracies, n_samples, "SVC", figs_path)
+    save_accuracy_plot(linear_accuracies, n_samples, "Linear", figs_path)
+    save_accuracy_plot(knn_accuracies, n_samples, "kNN", figs_path)

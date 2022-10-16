@@ -2,6 +2,8 @@ import torch
 from tqdm import tqdm
 import numpy as np
 from utilities import EarlyStopper
+from os.path import join
+from configfile import *
 
 def train_model(classifier, train_dataloader, val_dataloader, loss_function, optimizer, epochs, device):
     train_history = {"train_loss":[], "train_accuracy":[], "val_loss":[], "val_accuracy":[]}
@@ -13,7 +15,7 @@ def train_model(classifier, train_dataloader, val_dataloader, loss_function, opt
         for i, data in enumerate((pbar := tqdm(train_dataloader))):
             images, labels  = data[0].to(device), data[1].to(device)
             optimizer.zero_grad()
-            outputs, _ = classifier(images)
+            outputs = classifier(images)
             loss = loss_function(outputs, labels)
             loss.backward()
             optimizer.step()
@@ -32,7 +34,7 @@ def train_model(classifier, train_dataloader, val_dataloader, loss_function, opt
                 with torch.no_grad():
                     for data in val_dataloader:
                         images, labels = data[0].to(device), data[1].to(device)
-                        outputs, _ = classifier(images)
+                        outputs = classifier(images)
                         val_losses.append(loss_function(outputs, labels).item())
                         _, predicted = torch.max(outputs.data, 1)
                         total += labels.size(0)
@@ -40,7 +42,7 @@ def train_model(classifier, train_dataloader, val_dataloader, loss_function, opt
                     val_accuracy = 100.0 * correct / total
                     val_loss = np.mean(val_losses)
                 if train_history["val_accuracy"] and val_accuracy > np.max(train_history["val_accuracy"]):
-                    torch.save(classifier.state_dict(), "./checkpoints/best.pth")
+                    torch.save(classifier.state_dict(), join(checkpoints_path, "best.pth"))
                 train_history["train_loss"].append(train_loss)
                 train_history["train_accuracy"].append(train_accuracy)
                 train_history["val_loss"].append(val_loss)

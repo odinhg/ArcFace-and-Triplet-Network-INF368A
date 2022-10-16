@@ -12,13 +12,13 @@ from dataloader import FlowCamDataSet
 from utilities import sample_df
 
 if __name__ == "__main__":
-    if not (isfile("embeddings_train.pkl") and isfile("embeddings_test.pkl") and isfile("embeddings_test.pkl")):
+    if not (isfile(embeddings_file_train) and isfile(embeddings_file_test) and isfile(embeddings_file_unseen)):
         exit("Embeddings not found. Please evaluate model first!")
    
     # Load embeddings
-    df_test = pd.read_pickle("embeddings_test.pkl")
-    df_train = pd.read_pickle("embeddings_train.pkl")
-    df_unseen = pd.read_pickle("embeddings_unseen.pkl")
+    df_test = pd.read_pickle(embeddings_file_test)
+    df_train = pd.read_pickle(embeddings_file_train)
+    df_unseen = pd.read_pickle(embeddings_file_unseen)
     
     # Randomly subsample images
     number_of_samples = 2500
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     ax[2].set_title("UMAP (embedded unseen classes)")
     ax[2].legend(handles=s.legend_elements()[0], labels=class_names_unseen)
     fig.tight_layout()
-    plt.savefig(join("figs", "umap_embeddings.png"))
+    plt.savefig(join(figs_path, "umap_embeddings.png"))
     
     # The following code is a bit messy, and will probably never get cleaned up. So sorry about that.
     # Find samples closest to and furthest away from class center
@@ -99,6 +99,6 @@ if __name__ == "__main__":
         header_text = F.to_tensor(header_text) 
         image = torch.cat([header_text, in_class_images[i], other_class_images[i]], dim=1)
         image = F.to_pil_image(image)
-        image.save(join("figs", f"close_faraway_closeotherclass_class_{i}.png"))
+        image.save(join(figs_path, f"close_faraway_closeotherclass_class_{i}.png"))
 
         
