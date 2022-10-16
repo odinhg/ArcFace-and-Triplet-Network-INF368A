@@ -13,8 +13,6 @@ if __name__ == "__main__":
     #Use custom backbone based on EfficientNet v2
     summary(classifier, (3, *image_size), device=device)
     classifier.to(device)
-    #Load custom dataset
-    train_dataloader, val_dataloader, test_dataloader, _ = FlowCamDataLoader(class_names, image_size, val, test,  batch_size)
 
     if not isfile(join(checkpoints_path, "best.pth")):
         print("Training...")

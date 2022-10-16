@@ -47,7 +47,8 @@ def train_model(classifier, train_dataloader, val_dataloader, loss_function, opt
                 train_history["train_accuracy"].append(train_accuracy)
                 train_history["val_loss"].append(val_loss)
                 train_history["val_accuracy"].append(val_accuracy)
-                pbar.set_description(f"Epoch {epoch}/{epochs-1} | Loss: Train={round(train_loss, 3)} Val={round(val_loss, 3)} | Acc.: Train={round(train_accuracy,1)}% Val={round(val_accuracy, 1)}%")
+                pbar_string = f"Epoch {epoch}/{epochs-1} | Loss: Train={train_loss:.3f} Val={val_loss:.3f} | Acc.: Train={train_accuracy:.1f}% Val={val_accuracy:.1f}%"
+                pbar.set_description(pbar_string)
                 if earlystop(val_loss):
                     print(f"Early stopped at epoch {epoch}")
                     return train_history
