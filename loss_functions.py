@@ -7,7 +7,7 @@ class TripletLoss(nn.Module):
         super().__init__()
         self.m = m
 
-    def forward(self, a, p, n):
+    def forward(self, a, p, n, mining="semihard"):
         dists = torch.sum((a-p)**2, dim=1) - torch.sum((a-n)**2, dim=1) + self.m
         # Only sum positive values
         return torch.sum(dists[dists > 0]) / a.shape[0]
