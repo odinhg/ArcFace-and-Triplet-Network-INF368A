@@ -43,8 +43,9 @@ class TripletLoss(nn.Module):
                         is_semi_hard = (dist_ap < dist_an < dist_ap + self.margin)
                         # Hard triplets where d(a,n) < d(a,p)
                         is_hard = (dist_an < dist_ap)
-                        if is_semi_hard or (is_hard and self.mine_hard_triplets):
+                        if (is_semi_hard and not self.mine_hard_triplets) or (is_hard and self.mine_hard_triplets):
                             triplet_loss += torch.max((dist_ap - dist_an + self.margin), torch.tensor(0)) # max not really needed here
                             number_of_triplets_mined += 1
+                            break
         triplet_loss = triplet_loss / number_of_triplets_mined
         return triplet_loss

@@ -60,14 +60,16 @@ def train_classifier(classifier, train_dataloader, val_dataloader, loss_function
 def train_triplet(classifier, train_dataloader, val_dataloader, loss_function, optimizer, epochs, device):
     train_history = {"train_loss":[], "val_loss":[]}
     steps = len(train_dataloader) // 5 #Compute validation and train loss 5 times every epoch
-    earlystop = EarlyStopper()
     for epoch in range(epochs):
         train_losses = []
         val_loss = 0
+        train_loss = 0
         for i, data in enumerate((pbar := tqdm(train_dataloader))):
             images, labels  = data[0].to(device), data[1].to(device)
             optimizer.zero_grad()
             outputs = classifier(images, return_activations=True)
+            if epoch > 1:
+                loss_function.mine_hard_triplets = True
             loss = loss_function(outputs, labels)
             loss.backward()
             optimizer.step()
@@ -77,21 +79,20 @@ def train_triplet(classifier, train_dataloader, val_dataloader, loss_function, o
                 train_losses = []
                 val_losses = []
                 classifier.eval()
+                loss_function.mine_hard_triplets = True # Always compute validation loss on hard triplets
                 with torch.no_grad():
                     for data in val_dataloader:
                         images, labels = data[0].to(device), data[1].to(device)
                         outputs = classifier(images, return_activations=True)
                         val_losses.append(loss_function(outputs, labels).item())
                     val_loss = np.mean(val_losses)
-                if train_history["val_loss"] and val_loss < np.min(train_history["val_loss"]):
-                    torch.save(classifier.state_dict(), join(checkpoints_path, "best.pth"))
+                loss_function.mine_hard_triplets = False
                 train_history["train_loss"].append(train_loss)
                 train_history["val_loss"].append(val_loss)
-                if earlystop(val_loss):
-                    print(f"Early stopped at epoch {epoch}")
-                    return train_history
                 classifier.train()
-            train_loss = np.mean(train_losses)
+            if train_losses:
+                train_loss = np.mean(train_losses)
             pbar_string = f"Epoch {epoch}/{epochs-1} | TripletLoss: Train={train_loss:.3f} Val={val_loss:.3f}"
             pbar.set_description(pbar_string)
+        torch.save(classifier.state_dict(), join(checkpoints_path, "best.pth"))
     return train_history

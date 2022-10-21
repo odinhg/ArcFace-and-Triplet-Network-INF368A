@@ -8,7 +8,6 @@ from tqdm import tqdm
 from configfile import *
 from utilities import save_embeddings
 from dataloader import FlowCamDataLoader
-from backbone import BackBone
 
 if __name__ == "__main__":
     if not isfile(join(checkpoints_path, "best.pth")):
