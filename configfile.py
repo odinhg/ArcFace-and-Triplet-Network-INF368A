@@ -28,14 +28,15 @@ class_names = [class_names_all[i] for i in class_idx]
 class_names_unseen = [class_names_all[i] for i in class_idx_unseen]
 number_of_classes = len(class_names)
 
+train_dataloader, val_dataloader, test_dataloader, _ = FlowCamDataLoader(class_names, image_size, val, test,  batch_size)
+
+
 #Load custom dataset
 if model_type == "triplet":
-    train_dataloader, val_dataloader, test_dataloader = FlowCamTripletDataLoader(class_names, image_size, val, test,  batch_size)
     classifier = BackBone(number_of_classes)
-    loss_function = TripletLoss(m)
+    loss_function = TripletLoss(margin=margin, mine_hard_triplets=False, normalize_embeddings=True)
     optimizer = optim.Adam(classifier.parameters(), lr=lr)
 else:
-    train_dataloader, val_dataloader, test_dataloader, _ = FlowCamDataLoader(class_names, image_size, val, test,  batch_size)
     classifier = BackBone(number_of_classes)
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.Adam(classifier.parameters(), lr=lr)

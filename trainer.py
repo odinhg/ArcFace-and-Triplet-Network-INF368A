@@ -5,7 +5,7 @@ from utilities import EarlyStopper
 from os.path import join
 from configfile import *
 
-def train_model(classifier, train_dataloader, val_dataloader, loss_function, optimizer, epochs, device):
+def train_classifier(classifier, train_dataloader, val_dataloader, loss_function, optimizer, epochs, device):
     train_history = {"train_loss":[], "train_accuracy":[], "val_loss":[], "val_accuracy":[]}
     steps = len(train_dataloader) // 5 #Compute validation and train loss 5 times every epoch
     earlystop = EarlyStopper()
@@ -27,6 +27,7 @@ def train_model(classifier, train_dataloader, val_dataloader, loss_function, opt
                 train_loss = np.mean(train_losses)
                 train_losses = []
                 train_accuracy = 100.0 * np.mean(train_accuracies)
+                train_accuracies = []
                 correct = 0
                 total = 0
                 val_losses = []
@@ -53,4 +54,44 @@ def train_model(classifier, train_dataloader, val_dataloader, loss_function, opt
                     print(f"Early stopped at epoch {epoch}")
                     return train_history
                 classifier.train()
+    return train_history
+
+
+def train_triplet(classifier, train_dataloader, val_dataloader, loss_function, optimizer, epochs, device):
+    train_history = {"train_loss":[], "val_loss":[]}
+    steps = len(train_dataloader) // 5 #Compute validation and train loss 5 times every epoch
+    earlystop = EarlyStopper()
+    for epoch in range(epochs):
+        train_losses = []
+        val_loss = 0
+        for i, data in enumerate((pbar := tqdm(train_dataloader))):
+            images, labels  = data[0].to(device), data[1].to(device)
+            optimizer.zero_grad()
+            outputs = classifier(images, return_activations=True)
+            loss = loss_function(outputs, labels)
+            loss.backward()
+            optimizer.step()
+            train_losses.append(loss.item())
+            
+            if i % steps == steps - 1:
+                train_losses = []
+                val_losses = []
+                classifier.eval()
+                with torch.no_grad():
+                    for data in val_dataloader:
+                        images, labels = data[0].to(device), data[1].to(device)
+                        outputs = classifier(images, return_activations=True)
+                        val_losses.append(loss_function(outputs, labels).item())
+                    val_loss = np.mean(val_losses)
+                if train_history["val_loss"] and val_loss < np.min(train_history["val_loss"]):
+                    torch.save(classifier.state_dict(), join(checkpoints_path, "best.pth"))
+                train_history["train_loss"].append(train_loss)
+                train_history["val_loss"].append(val_loss)
+                if earlystop(val_loss):
+                    print(f"Early stopped at epoch {epoch}")
+                    return train_history
+                classifier.train()
+            train_loss = np.mean(train_losses)
+            pbar_string = f"Epoch {epoch}/{epochs-1} | TripletLoss: Train={train_loss:.3f} Val={val_loss:.3f}"
+            pbar.set_description(pbar_string)
     return train_history

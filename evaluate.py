@@ -6,9 +6,7 @@ import torch.nn as nn
 from os.path import isfile
 from tqdm import tqdm
 from configfile import *
-from utilities import save_train_plot
 from dataloader import FlowCamDataLoader
-from trainer import train_model
 from backbone import BackBone
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ from tqdm import tqdm
 from configfile import *
 from utilities import save_train_plot
 from dataloader import FlowCamDataLoader
-from trainer import train_model
+from trainer import train_classifier, train_triplet
 from torchsummary import summary
 
 if __name__ == "__main__":
@@ -16,7 +16,10 @@ if __name__ == "__main__":
 
     if not isfile(join(checkpoints_path, "best.pth")):
         print("Training...")
-        train_history = train_model(classifier, train_dataloader, val_dataloader, loss_function, optimizer, epochs, device)
-        save_train_plot(join(figs_path, "training_plot.png"), train_history)
+        if model_type == "triplet":
+            train_history = train_triplet(classifier, train_dataloader, val_dataloader, loss_function, optimizer, epochs, device)
+        else:
+            train_history = train_classifier(classifier, train_dataloader, val_dataloader, loss_function, optimizer, epochs, device)
+            save_train_plot(join(figs_path, "training_plot.png"), train_history)
     else:
         print("Chechpoint found! Please delete checkpoint and run training again.")

@@ -8,14 +8,11 @@ from tqdm import tqdm
 from configfile import *
 from utilities import save_embeddings
 from dataloader import FlowCamDataLoader
-from trainer import train_model
 from backbone import BackBone
 
 if __name__ == "__main__":
     if not isfile(join(checkpoints_path, "best.pth")):
         exit("No checkpoint found! Please run training before evaluating model.")
-    number_of_classes = len(class_names)
-    classifier = BackBone(number_of_classes)
     classifier.to(device)
     #Load custom dataset
     train_dataloader, val_dataloader, test_dataloader, _ = FlowCamDataLoader(class_names, image_size, val, test,  batch_size)
