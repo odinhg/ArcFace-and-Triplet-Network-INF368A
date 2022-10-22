@@ -39,7 +39,8 @@ class BackBone(nn.Module):
         #Fully connected layers.
         self.fc1 = nn.Sequential(
                 nn.Linear(4096, 128), 
-                nn.ReLU(),
+                nn.LeakyReLU(),
+                #nn.ReLU(),
                 nn.Dropout(0.2))
         self.fc2 = nn.Sequential(
                 nn.Linear(128, self.number_of_classes))
