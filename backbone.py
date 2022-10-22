@@ -40,7 +40,6 @@ class BackBone(nn.Module):
         self.fc1 = nn.Sequential(
                 nn.Linear(4096, 128), 
                 nn.LeakyReLU(),
-                #nn.ReLU(),
                 nn.Dropout(0.2))
         self.fc2 = nn.Sequential(
                 nn.Linear(128, self.number_of_classes))
@@ -50,6 +49,7 @@ class BackBone(nn.Module):
         x = self.extra_layers(x)
         x = torch.flatten(x, start_dim = 1)
         a = self.fc1(x)
+        a = nn.functional.normalize(a, p=2, dim=1) #L2-normalize features
         if return_activations:
             return a
         x = self.fc2(a)

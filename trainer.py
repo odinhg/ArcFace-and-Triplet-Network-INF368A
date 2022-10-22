@@ -68,7 +68,7 @@ def train_triplet(classifier, train_dataloader, val_dataloader, loss_function, o
             images, labels  = data[0].to(device), data[1].to(device)
             optimizer.zero_grad()
             outputs = classifier(images, return_activations=True)
-            if epoch > 1:
+            if epoch >= 0:
                 loss_function.mine_hard_triplets = True
             loss = loss_function(outputs, labels)
             loss.backward()
@@ -79,12 +79,11 @@ def train_triplet(classifier, train_dataloader, val_dataloader, loss_function, o
                 train_losses = []
                 val_losses = []
                 classifier.eval()
-                loss_function.mine_hard_triplets = True # Always compute validation loss on hard triplets
                 with torch.no_grad():
                     for data in val_dataloader:
                         images, labels = data[0].to(device), data[1].to(device)
                         outputs = classifier(images, return_activations=True)
-                        val_losses.append(loss_function(outputs, labels).item())
+                        val_losses.append(loss_function(outputs, labels, validation=True).item())
                     val_loss = np.mean(val_losses)
                 loss_function.mine_hard_triplets = False
                 train_history["train_loss"].append(train_loss)

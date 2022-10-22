@@ -16,12 +16,12 @@ class TripletLoss(nn.Module):
     def mine_hard_triplets(self, value):
         self._mine_hard_triplets = value
 
-    def forward(self, embeddings, labels):
+    def forward(self, embeddings, labels, validation=False):
         # Mine semi-hard (and possibly hard) triplets and compute loss
         device = embeddings.device
         self.margin.to(device)
-        if self.normalize_embeddings:
-            embeddings = nn.functional.normalize(embeddings) # Normalize embeddings
+        #if self.normalize_embeddings:
+        #    embeddings = nn.functional.normalize(embeddings) # Normalize embeddings
         embedding_dimension = embeddings[0].shape[0]
         classes_in_batch = torch.unique(labels)
         triplet_loss = torch.tensor(0.0, device=device) 
@@ -39,6 +39,10 @@ class TripletLoss(nn.Module):
                     for n_idx in range(0, different_class_samples.shape[0]):
                         n = different_class_samples[n_idx]
                         dist_an = torch.sum((a-n)**2)
+                        if validation:
+                            triplet_loss += torch.max((dist_ap - dist_an + self.margin), torch.tensor(0)) # max not really needed here
+                            number_of_triplets_mined += 1
+                            break 
                         # Semi-hard triplets where d(a,p) < d(a,n) but the negative lies within the margin
                         is_semi_hard = (dist_ap < dist_an < dist_ap + self.margin)
                         # Hard triplets where d(a,n) < d(a,p)
@@ -47,5 +51,8 @@ class TripletLoss(nn.Module):
                             triplet_loss += torch.max((dist_ap - dist_an + self.margin), torch.tensor(0)) # max not really needed here
                             number_of_triplets_mined += 1
                             break
+                    if number_of_triplets_mined >= 200:
+                        return triplet_loss / number_of_triplets_mined
+
         triplet_loss = triplet_loss / number_of_triplets_mined
         return triplet_loss
