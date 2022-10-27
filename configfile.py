@@ -34,7 +34,7 @@ train_dataloader, val_dataloader, test_dataloader, _ = FlowCamDataLoader(class_n
 #Load custom dataset
 if model_type == "triplet":
     classifier = BackBone(number_of_classes)
-    loss_function = TripletLoss(margin=margin, mine_hard_triplets=False, normalize_embeddings=True)
+    loss_function = TripletLoss(margin=margin)
     optimizer = optim.Adam(classifier.parameters(), lr=lr)
 else:
     classifier = BackBone(number_of_classes)
