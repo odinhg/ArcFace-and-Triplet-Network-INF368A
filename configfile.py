@@ -42,7 +42,7 @@ else:
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.Adam(classifier.parameters(), lr=lr)
 
-device = torch.device('cuda:3') 
+device = torch.device('cuda:4') 
 
 config_name = configfiles[idx]
 embeddings_path = join("embeddings", config_name)

@@ -66,9 +66,9 @@ def train_triplet(classifier, train_dataloader, val_dataloader, loss_function, o
         train_losses = []
         val_loss = 0
         train_loss = 0
-        if epoch >= 10: # Switch to batch hard mining after some epochs
+        if epoch >= 5: # Switch to batch hard mining after some epochs
             mining_mode = "hard"
-        if epoch >= 15:
+        if epoch >= 10:
             positive_difficulty = "hard"
         for i, data in enumerate((pbar := tqdm(train_dataloader))):
             images, labels  = data[0].to(device), data[1].to(device)
