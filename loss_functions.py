@@ -6,7 +6,7 @@ class TripletLoss(nn.Module):
         super().__init__()
         self.margin = torch.tensor(margin)
     
-    def forward(self, embeddings, labels, mining_mode="semi-hard"):
+    def forward(self, embeddings, labels, mining_mode="semi-hard", positive_difficulty="easy"):
         device = embeddings.device
         self.margin.to(device)
         embedding_dimension = embeddings[0].shape[0]
@@ -27,8 +27,11 @@ class TripletLoss(nn.Module):
                 dists_an = dist_mat[a_idx, n_indices]
                 
                 dists_ap = dist_mat[a_idx, ap_indices]
-                dists_ap = dists_ap[dists_ap.nonzero(as_tuple=True)] # Easy positive mining
-                dist_ap = torch.min(dists_ap)
+                dists_ap = dists_ap[dists_ap.nonzero(as_tuple=True)]
+                if positive_difficulty == "easy":
+                    dist_ap = torch.min(dists_ap)
+                else:
+                    dist_ap = torch.max(dists_ap)
 
                 if mining_mode == "semi-hard":
                     mined_indices = torch.logical_and((dists_an > dist_ap), (dists_an < dist_ap + self.margin)).nonzero()
@@ -41,7 +44,7 @@ class TripletLoss(nn.Module):
                     dist_an = dist_mat[a_idx, mined_indices[0,0]]
 
                 loss = nn.functional.relu(dist_ap - dist_an + self.margin)
-                triplet_loss = triplet_loss + loss.item()
+                triplet_loss = triplet_loss + loss
                 number_of_triplets_mined += 1
         #print(f"Mined {number_of_triplets_mined} {mining_mode} triplets!")
 

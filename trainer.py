@@ -61,12 +61,15 @@ def train_triplet(classifier, train_dataloader, val_dataloader, loss_function, o
     train_history = {"train_loss":[], "val_loss":[]}
     steps = len(train_dataloader) // 5 #Compute validation and train loss 5 times every epoch
     mining_mode = "semi-hard"
+    positive_difficulty = "easy"
     for epoch in range(epochs):
         train_losses = []
         val_loss = 0
         train_loss = 0
         if epoch >= 10: # Switch to batch hard mining after some epochs
             mining_mode = "hard"
+        if epoch >= 15:
+            positive_difficulty = "hard"
         for i, data in enumerate((pbar := tqdm(train_dataloader))):
             images, labels  = data[0].to(device), data[1].to(device)
             optimizer.zero_grad()
@@ -84,7 +87,7 @@ def train_triplet(classifier, train_dataloader, val_dataloader, loss_function, o
                     for data in val_dataloader:
                         images, labels = data[0].to(device), data[1].to(device)
                         outputs = classifier(images, return_activations=True)
-                        val_losses.append(loss_function(outputs, labels, mining_mode="hard").item())
+                        val_losses.append(loss_function(outputs, labels, mining_mode="hard", positive_difficulty="hard").item())
                     val_loss = np.mean(val_losses)
                 loss_function.mine_hard_triplets = False
                 train_history["train_loss"].append(train_loss)

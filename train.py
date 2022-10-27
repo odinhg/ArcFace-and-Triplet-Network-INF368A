@@ -14,12 +14,9 @@ if __name__ == "__main__":
     summary(classifier, (3, *image_size), device=device)
     classifier.to(device)
 
-    if not isfile(join(checkpoints_path, "best.pth")):
-        print("Training...")
-        if model_type == "triplet":
-            train_history = train_triplet(classifier, train_dataloader, val_dataloader, loss_function, optimizer, epochs, device)
-        else:
-            train_history = train_classifier(classifier, train_dataloader, val_dataloader, loss_function, optimizer, epochs, device)
-            save_train_plot(join(figs_path, "training_plot.png"), train_history)
+    print("Training...")
+    if model_type == "triplet":
+        train_history = train_triplet(classifier, train_dataloader, val_dataloader, loss_function, optimizer, epochs, device)
     else:
-        print("Chechpoint found! Please delete checkpoint and run training again.")
+        train_history = train_classifier(classifier, train_dataloader, val_dataloader, loss_function, optimizer, epochs, device)
+        save_train_plot(join(figs_path, "training_plot.png"), train_history)
