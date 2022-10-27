@@ -35,13 +35,14 @@ train_dataloader, val_dataloader, test_dataloader, _ = FlowCamDataLoader(class_n
 if model_type == "triplet":
     classifier = BackBone(number_of_classes)
     loss_function = TripletLoss(margin=margin)
-    optimizer = optim.Adam(classifier.parameters(), lr=lr)
+    #optimizer = optim.Adam(classifier.parameters(), lr=lr)
+    optimizer = optim.SGD(classifier.parameters(), lr=lr, momentum=0.9, weight_decay=0.0005)
 else:
     classifier = BackBone(number_of_classes)
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.Adam(classifier.parameters(), lr=lr)
 
-device = torch.device('cuda:4') 
+device = torch.device('cuda:3') 
 
 config_name = configfiles[idx]
 embeddings_path = join("embeddings", config_name)

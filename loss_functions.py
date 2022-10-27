@@ -11,7 +11,7 @@ class TripletLoss(nn.Module):
         self.margin.to(device)
         embedding_dimension = embeddings[0].shape[0]
         classes_in_batch = torch.unique(labels)
-        dist_mat = torch.cdist(embeddings, embeddings)
+        dist_mat = torch.cdist(embeddings, embeddings)**2
         triplet_loss = torch.tensor(0.0, device=device, requires_grad=True) 
         number_of_triplets_mined = 0
         for c in classes_in_batch:
@@ -19,26 +19,30 @@ class TripletLoss(nn.Module):
             if embeddings[ap_indices].reshape(-1, embedding_dimension).shape[0] < 2:
                 continue
             n_indices = (labels != c).nonzero()
+            #ap_pairs = torch.combinations(ap_indices.reshape(-1), r=2)
             for a_idx in ap_indices: 
-                dist_ap = torch.max(dist_mat[a_idx, ap_indices])
+            #for a_idx, p_idx in ap_pairs: 
+                #dist_ap = dist_mat[a_idx, p_idx]
+                #dist_ap = torch.cat([dist_mat[a_idx, 0:a_idx], dist_mat[a_idx, a_idx+1:]])
                 dists_an = dist_mat[a_idx, n_indices]
+                
+                dists_ap = dist_mat[a_idx, ap_indices]
+                dists_ap = dists_ap[dists_ap.nonzero(as_tuple=True)] # Easy positive mining
+                dist_ap = torch.min(dists_ap)
 
                 if mining_mode == "semi-hard":
-                    mined_negative_indices = torch.logical_and((dists_an > dist_ap), (dists_an < dist_ap + self.margin)).nonzero()
-                elif mining_mode == "hard":
-                    mined_negative_indices = (dists_an < dist_ap).nonzero()
-                else:
-                    mined_negative_indices = n_indices
+                    mined_indices = torch.logical_and((dists_an > dist_ap), (dists_an < dist_ap + self.margin)).nonzero()
+                else: # Mine hard triplets
+                    mined_indices = (dists_an < dist_ap).nonzero()
 
-                if mined_negative_indices.numel() == 0: # In case we don't mine any triplets
-                    n_idx = n_indices[0] # Just add one to avoid nan
-                    # ADD harder triplet!
+                if mined_indices.numel() == 0: # In case we don't mine any triplets...
+                    dist_an = torch.min(dists_an)       # Just add the closest negative to avoid nan
                 else:
-                    n_idx = mined_negative_indices[0,0]
+                    dist_an = dist_mat[a_idx, mined_indices[0,0]]
 
-                dist_an = dist_mat[a_idx, n_idx]
-                loss = nn.functional.relu(dist_ap**2 - dist_an**2 + self.margin)
+                loss = nn.functional.relu(dist_ap - dist_an + self.margin)
                 triplet_loss = triplet_loss + loss.item()
                 number_of_triplets_mined += 1
+        #print(f"Mined {number_of_triplets_mined} {mining_mode} triplets!")
 
         return triplet_loss / number_of_triplets_mined
