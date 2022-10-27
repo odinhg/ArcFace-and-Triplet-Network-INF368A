@@ -19,9 +19,8 @@ class TripletLoss(nn.Module):
             if embeddings[ap_indices].reshape(-1, embedding_dimension).shape[0] < 2:
                 continue
             n_indices = (labels != c).nonzero()
-            ap_pairs = torch.combinations(ap_indices.reshape(-1), r=2)
-            for a_idx, p_idx in ap_pairs: 
-                dist_ap = dist_mat[a_idx, p_idx]
+            for a_idx in ap_indices: 
+                dist_ap = torch.max(dist_mat[a_idx, ap_indices])
                 dists_an = dist_mat[a_idx, n_indices]
 
                 if mining_mode == "semi-hard":
@@ -33,6 +32,7 @@ class TripletLoss(nn.Module):
 
                 if mined_negative_indices.numel() == 0: # In case we don't mine any triplets
                     n_idx = n_indices[0] # Just add one to avoid nan
+                    # ADD harder triplet!
                 else:
                     n_idx = mined_negative_indices[0,0]
 
