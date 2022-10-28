@@ -3,7 +3,7 @@
 
 ![Plankton](figs/plankton.png)
 
-## Task 1
+## Task 1 (Triplet Margin Loss)
 To train the triplet loss model, run `train.py` and choose the `triplet_loss` config when prompted.
 
 ### Triplet Loss
@@ -41,24 +41,32 @@ It takes around 12 minutes to train the model for 35 epochs (when Birget is havi
 
 We can see a steady decrease in validation loss during training. There are two jumps in the training loss which are due to the change of mining policies (increasing difficulty). These jumps are not seen in the validation loss since we always compute validation loss using the most difficult triplets.
 
-## Task 2
-- Same backbone, but implement CosFace, ArcFace or somthing like that.
-- Train model and report
+## Task 2 (ArcFace)
+
+![Loss Plot](figs/arcface/training_plot.png)
 
 ## Task 3 and 4
 Embed data and report average distances (use appropriate distance measure)
 
 ### Triplet Loss
 
-**Average Euclidean distances between classes**
+**Average Euclidean distances between classes in training data**
 
 ![Average euclidean distances for test data](figs/triplet_loss/average_euclidean_distances_test.png)
+
+**Average Euclidean distances between unseen classes**
+
 ![Average euclidean distances for unseen classes](figs/triplet_loss/average_euclidean_distances_unseen.png)
 
-**Average angular (cosine) distances between classes**
+### ArcFace
 
-![Average angular distances for test data](figs/triplet_loss/average_angular_distances_test.png)
-![Average angular distances for unseen classes](figs/triplet_loss/average_angular_distances_unseen.png)
+**Average angular (cosine) distances between classes in training data**
+
+![Average angular distances for test data](figs/arcface/average_angular_distances_test.png)
+
+**Average angular (cosine) distances between unseen classes**
+
+![Average angular distances for unseen classes](figs/arcface/average_angular_distances_unseen.png)
 
 ## Task 5
 Visualise representations using UMAP for both models
@@ -66,6 +74,10 @@ Visualise representations using UMAP for both models
 ### Triplet Loss
 
 ![UMAP of embeddings](figs/triplet_loss/umap_embeddings.png)
+
+### ArcFace 
+
+![UMAP of embeddings](figs/arcface/umap_embeddings.png)
 
 ## Task 6
 Display images close to center, far-away from center and closest images from other classes. For both models.
@@ -79,10 +91,26 @@ Display images close to center, far-away from center and closest images from oth
 ![Closest and furthest away samples in class 4](figs/triplet_loss/close_faraway_closeotherclass_class_4.png)
 ![Closest and furthest away samples in class 5](figs/triplet_loss/close_faraway_closeotherclass_class_5.png)
 
+### ArcFace
+arcface
+![Closest and furthest away samples in class 0](figs/arcface/close_faraway_closeotherclass_class_0.png)
+![Closest and furthest away samples in class 1](figs/arcface/close_faraway_closeotherclass_class_1.png)
+![Closest and furthest away samples in class 2](figs/arcface/close_faraway_closeotherclass_class_2.png)
+![Closest and furthest away samples in class 3](figs/arcface/close_faraway_closeotherclass_class_3.png)
+![Closest and furthest away samples in class 4](figs/arcface/close_faraway_closeotherclass_class_4.png)
+![Closest and furthest away samples in class 5](figs/arcface/close_faraway_closeotherclass_class_5.png)
+
 ## Task 7
 Train classifiers on embeddings only.
 
 ### Triplet Loss
+
 ![Test accuracy SVC](figs/triplet_loss/accuracy_SVC.png)
 ![Test accuracy Linear Classifier](figs/triplet_loss/accuracy_Linear.png)
 ![Test accuracy kNN](figs/triplet_loss/accuracy_kNN.png)
+
+### Triplet Loss
+
+![Test accuracy SVC](figs/arcface/accuracy_SVC.png)
+![Test accuracy Linear Classifier](figs/arcface/accuracy_Linear.png)
+![Test accuracy kNN](figs/arcface/accuracy_kNN.png)

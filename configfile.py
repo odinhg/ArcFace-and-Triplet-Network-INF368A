@@ -3,9 +3,9 @@ import torch.nn as nn
 import torch.optim as optim
 from os import listdir, makedirs
 from os.path import isfile, join, exists
-from dataloader import FlowCamTripletDataLoader, FlowCamDataLoader
+from dataloader import FlowCamDataLoader
 from backbone import BackBone
-from loss_functions import TripletLoss
+from loss_functions import TripletLoss, AngularMarginLoss
 
 torch.manual_seed(0)
 
@@ -28,18 +28,19 @@ class_names = [class_names_all[i] for i in class_idx]
 class_names_unseen = [class_names_all[i] for i in class_idx_unseen]
 number_of_classes = len(class_names)
 
+#Load custom dataset
 train_dataloader, val_dataloader, test_dataloader, _ = FlowCamDataLoader(class_names, image_size, val, test,  batch_size)
 
+# Model
+classifier = BackBone(number_of_classes)
+optimizer = optim.Adam(classifier.parameters(), lr=lr)
 
-#Load custom dataset
 if model_type == "triplet":
-    classifier = BackBone(number_of_classes)
     loss_function = TripletLoss(margin=margin)
-    optimizer = optim.Adam(classifier.parameters(), lr=lr)
+elif model_type == "arcface":
+    loss_function = AngularMarginLoss(m=margin, s=scale, number_of_classes=number_of_classes)
 else:
-    classifier = BackBone(number_of_classes)
     loss_function = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(classifier.parameters(), lr=lr)
 
 device = torch.device('cuda:4') 
 

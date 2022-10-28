@@ -44,7 +44,7 @@ class BackBone(nn.Module):
         self.fc2 = nn.Sequential(
                 nn.Linear(128, self.number_of_classes))
 
-    def forward(self, x, return_activations=False):
+    def forward(self, x, return_activations=False, return_activations_and_output=False):
         x = self.feature_extractor(x)
         x = self.extra_layers(x)
         x = torch.flatten(x, start_dim = 1)
@@ -53,4 +53,10 @@ class BackBone(nn.Module):
         if return_activations:
             return a
         x = self.fc2(a)
+        if return_activations_and_output:
+            return a, x
         return x
+
+    def get_normalized_weights(self):
+        # Extract weights of last fully connected layer
+        return nn.functional.normalize(self.fc2[0].weight, p=2, dim=1) #L2-normalize weights
