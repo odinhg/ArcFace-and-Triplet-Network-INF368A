@@ -117,7 +117,7 @@ We compute the center for each class and show the 5 closest images and the 5 fur
 ![Closest and furthest away samples in class 5](figs/arcface/close_faraway_closeotherclass_class_5.png)
 
 ## Task 7
-To generate accuracy plots for this task, run `transfer_learning.py`. We load the previously computed embeddings of the unseen classes from `embeddings_unseen.pkl` and split this into training (65%) and test (35%) data. Using more and more of the training data, we fit three classifiers and evaluate them on the test data:
+To generate accuracy plots for this task, run `transfer_learning.py`. We load the previously computed embeddings of the unseen classes and split this into training (65%) and test (35%) data. Using more and more of the training data, we fit three classifiers and evaluate them on the test data:
 
 - Support Vector Classifier
 - Linear Classifier
@@ -125,13 +125,13 @@ To generate accuracy plots for this task, run `transfer_learning.py`. We load th
 
 The following plots show the test accuracy for each classifier with respect to the size of training data used.
 
-### Triplet Loss
+### Trained on embeddings from our Triplet Loss model
 
 ![Test accuracy SVC](figs/triplet_loss/accuracy_SVC.png)
 ![Test accuracy Linear Classifier](figs/triplet_loss/accuracy_Linear.png)
 ![Test accuracy kNN](figs/triplet_loss/accuracy_kNN.png)
 
-### ArcFace 
+### Trained on embeddings from our ArcFace model
 
 ![Test accuracy SVC](figs/arcface/accuracy_SVC.png)
 ![Test accuracy Linear Classifier](figs/arcface/accuracy_Linear.png)
