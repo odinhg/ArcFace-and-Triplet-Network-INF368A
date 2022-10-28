@@ -7,7 +7,7 @@
 To train the triplet loss model, run `train.py` and choose the `triplet_loss` config when prompted.
 
 ### Triplet Loss
-I choose to implement a triplet loss architecture with online triplet mining. The loss function is defined as $\mathcal(L)(x_a, x_p, x_n) = \operatorname{ReLU}(\Vert f(x_a) - f(x_p) \Vert^2 - \Vert f(x_a) - f(x_n) \Vert^2 + m)$ where $m$ is a margin parameter and $(x_a, x_p, x_n)$ is a valid triplet. That is, $C(x_a) = C(x_p) \neq C(x_n)$ and $x_a \neq x_p$ where $C(x)$ denotes the class of $x$.
+I choose to implement a triplet loss architecture with online triplet mining. The loss function is defined as $\mathcal{L}(x_a, x_p, x_n) = \operatorname{ReLU}(\Vert f(x_a) - f(x_p) \Vert^2 - \Vert f(x_a) - f(x_n) \Vert^2 + m)$ where $m$ is a margin parameter and $(x_a, x_p, x_n)$ is a valid triplet. That is, $C(x_a) = C(x_p) \neq C(x_n)$ and $x_a \neq x_p$ where $C(x)$ denotes the class of $x$.
 
 **Note:** The embeddings are l2-normalized in the backbone before they are passed to the triplet loss.
 
