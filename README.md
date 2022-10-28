@@ -76,11 +76,11 @@ Here we visualise the embeddings using UMAP for both models.
 
 ### Triplet Loss
 
-![UMAP of embeddings](figs/triplet_loss/umap_embeddings.png)
+![](figs/triplet_loss/umap_embeddings.png)
 
 ### ArcFace 
 
-![UMAP of embeddings](figs/arcface/umap_embeddings.png)
+![](figs/arcface/umap_embeddings.png)
 
 Based on the 2-dimensional projections, both models seems to achieve good separation between the different classes in the training data. Now, for the unseen classes, the last class tends to overlap with the two other classes. Another thing to note, is that for the triplet loss, the first unseen class forms three (or more) different clusters. On the other hand, the clusters in the unseen data seems to be more connected in the ArcFace embeddings.
 
@@ -105,14 +105,9 @@ To generate accuracy plots for this task, run `transfer_learning.py`. We load th
 
 The following plots show the test accuracy for each classifier with respect to the size of training data used.
 
-### Trained on embeddings from our Triplet Loss model
+| **Classifier** | **Triplet Loss** | **Angular Margin Loss** |
+:---:|:---:|:---:
+Support Vector Classifier | ![](figs/triplet_loss/accuracy_SVC.png) | ![](figs/arcface/accuracy_SVC.png)
+Linear Classifier | ![](figs/triplet_loss/accuracy_Linear.png) | ![](figs/arcface/accuracy_Linear.png)
+k-Nearest Neighbors | ![](figs/triplet_loss/accuracy_kNN.png) | ![](figs/arcface/accuracy_kNN.png)   
 
-![Test accuracy SVC](figs/triplet_loss/accuracy_SVC.png)
-![Test accuracy Linear Classifier](figs/triplet_loss/accuracy_Linear.png)
-![Test accuracy kNN](figs/triplet_loss/accuracy_kNN.png)
-
-### Trained on embeddings from our ArcFace model
-
-![Test accuracy SVC](figs/arcface/accuracy_SVC.png)
-![Test accuracy Linear Classifier](figs/arcface/accuracy_Linear.png)
-![Test accuracy kNN](figs/arcface/accuracy_kNN.png)
