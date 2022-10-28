@@ -111,3 +111,4 @@ Support Vector Classifier | ![](figs/triplet_loss/accuracy_SVC.png) | ![](figs/a
 Linear Classifier | ![](figs/triplet_loss/accuracy_Linear.png) | ![](figs/arcface/accuracy_Linear.png)
 k-Nearest Neighbors | ![](figs/triplet_loss/accuracy_kNN.png) | ![](figs/arcface/accuracy_kNN.png)   
 
+With the linear classifier, both models seems to perform equally well. With the SVC and kNN classifier, the Angular Margin Loss model seems to perform a little bit better when it comes to transfer learning.
