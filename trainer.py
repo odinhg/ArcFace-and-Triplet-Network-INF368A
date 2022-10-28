@@ -67,9 +67,9 @@ def train_triplet(classifier, train_dataloader, val_dataloader, loss_function, o
         val_loss = 0
         train_loss = 0
 
-        if epoch >= 10: # Increase difficulty after some epochs to prevent collapse
+        if epoch >= 15: # Increase difficulty after some epochs to prevent collapse
             negative_policy = "hard"
-        if epoch >= 15:
+        if epoch >= 25:
             positive_policy = "hard"
         
         for i, data in enumerate((pbar := tqdm(train_dataloader))):
