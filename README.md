@@ -64,25 +64,10 @@ We can evaluate the ArcFace classifier by running `evaluate.py`.
 ## Task 3 and 4
 Here we compute the average angular (cosine) distances between classes in the embedding space for both models. To compute average distances, run `compute_average_distances.py`.
 
-### Triplet Loss
-
-**Average angular (cosine) distances between classes in training data**
-
-![Average angular distances for test data](figs/triplet_loss/average_angular_distances_test.png)
-
-**Average angular (cosine) distances between unseen classes**
-
-![Average angular distances for unseen classes](figs/triplet_loss/average_angular_distances_unseen.png)
-
-### ArcFace
-
-**Average angular (cosine) distances between classes in training data**
-
-![Average angular distances for test data](figs/arcface/average_angular_distances_test.png)
-
-**Average angular (cosine) distances between unseen classes**
-
-![Average angular distances for unseen classes](figs/arcface/average_angular_distances_unseen.png)
+**Classes** | **Triplet Loss** | **Angular Margin Loss** |
+:---:|:---:|:---:
+Classes in training data | ![](figs/triplet_loss/average_angular_distances_test.png) | ![](figs/arcface/average_angular_distances_test.png)   
+Unseen classes | ![](figs/triplet_loss/average_angular_distances_unseen.png) | ![](figs/arcface/average_angular_distances_unseen.png)
 
 Both models seems to achieve a good separation on average for all classes in the training data. However, as we saw earlier with the SoftMax classifier, the models are having a hard time with the last class in the unseen data.
 
@@ -102,25 +87,7 @@ Based on the 2-dimensional projections, both models seems to achieve good separa
 ## Task 6
 We compute the center for each class and show the 5 closest images and the 5 furthest away images with respect to the Euclidean distance to their class center. We also find the 5 closest images from other classes. The *first* and *second row* shows the closest and furthest away images within the class, respectively. The *bottom row* shows the closest images from other classes. In this task we use samples from the training data.
 
-### Triplet Loss
-
-![Closest and furthest away samples in class 0](figs/triplet_loss/close_faraway_closeotherclass_class_0.png)
-![Closest and furthest away samples in class 1](figs/triplet_loss/close_faraway_closeotherclass_class_1.png)
-![Closest and furthest away samples in class 2](figs/triplet_loss/close_faraway_closeotherclass_class_2.png)
-![Closest and furthest away samples in class 3](figs/triplet_loss/close_faraway_closeotherclass_class_3.png)
-![Closest and furthest away samples in class 4](figs/triplet_loss/close_faraway_closeotherclass_class_4.png)
-![Closest and furthest away samples in class 5](figs/triplet_loss/close_faraway_closeotherclass_class_5.png)
-
-### ArcFace
-
-![Closest and furthest away samples in class 0](figs/arcface/close_faraway_closeotherclass_class_0.png)
-![Closest and furthest away samples in class 1](figs/arcface/close_faraway_closeotherclass_class_1.png)
-![Closest and furthest away samples in class 2](figs/arcface/close_faraway_closeotherclass_class_2.png)
-![Closest and furthest away samples in class 3](figs/arcface/close_faraway_closeotherclass_class_3.png)
-![Closest and furthest away samples in class 4](figs/arcface/close_faraway_closeotherclass_class_4.png)
-![Closest and furthest away samples in class 5](figs/arcface/close_faraway_closeotherclass_class_5.png)
-
-| **Triplet Loss** | **ArcFace** |
+| **Triplet Loss** | **Angular Margin Loss** |
 :---:|:---:
 ![](figs/triplet_loss/close_faraway_closeotherclass_class_0.png) | ![](figs/arcface/close_faraway_closeotherclass_class_0.png)
 ![](figs/triplet_loss/close_faraway_closeotherclass_class_1.png) | ![](figs/arcface/close_faraway_closeotherclass_class_1.png)
@@ -128,12 +95,6 @@ We compute the center for each class and show the 5 closest images and the 5 fur
 ![](figs/triplet_loss/close_faraway_closeotherclass_class_3.png) | ![](figs/arcface/close_faraway_closeotherclass_class_3.png)
 ![](figs/triplet_loss/close_faraway_closeotherclass_class_4.png) | ![](figs/arcface/close_faraway_closeotherclass_class_4.png)
 ![](figs/triplet_loss/close_faraway_closeotherclass_class_5.png) | ![](figs/arcface/close_faraway_closeotherclass_class_5.png)
-
-
-
-
-
-
 
 ## Task 7
 To generate accuracy plots for this task, run `transfer_learning.py`. We load the previously computed embeddings of the unseen classes and split this into training (65%) and test (35%) data. Using more and more of the training data, we fit three classifiers and evaluate them on the test data:
