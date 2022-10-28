@@ -20,6 +20,17 @@ def save_train_plot(filename, train_history):
     fig.tight_layout()
     plt.savefig(filename)
 
+def save_loss_plot(filename, train_history):
+    # Plot training and validation loss (for triplet loss model)
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(10, 6))
+    axes[0].plot(train_history["train_loss"], 'b', label="Train")
+    axes[1].plot(train_history["val_loss"], 'g', label="Val")
+    axes[0].title.set_text('Training Loss')
+    axes[1].title.set_text('Validation Loss')
+    fig.tight_layout()
+    plt.savefig(filename)
+
+
 def compute_average_distances(classes):
     # Compute average Euclidean and angular distances between classes
     # classes: list of pandas dataframes with embeddings for each class

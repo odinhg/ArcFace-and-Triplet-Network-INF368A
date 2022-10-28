@@ -4,7 +4,7 @@ import pandas as pd
 from os.path import isfile, join
 from tqdm import tqdm
 from configfile import *
-from utilities import save_train_plot
+from utilities import save_train_plot, save_loss_plot
 from dataloader import FlowCamDataLoader
 from trainer import train_classifier, train_triplet
 from torchsummary import summary
@@ -17,6 +17,7 @@ if __name__ == "__main__":
     print("Training...")
     if model_type == "triplet":
         train_history = train_triplet(classifier, train_dataloader, val_dataloader, loss_function, optimizer, epochs, device)
+        save_loss_plot(join(figs_path, "training_plot.png"), train_history)
     else:
         train_history = train_classifier(classifier, train_dataloader, val_dataloader, loss_function, optimizer, epochs, device)
         save_train_plot(join(figs_path, "training_plot.png"), train_history)

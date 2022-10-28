@@ -36,7 +36,6 @@ if model_type == "triplet":
     classifier = BackBone(number_of_classes)
     loss_function = TripletLoss(margin=margin)
     optimizer = optim.Adam(classifier.parameters(), lr=lr)
-    #optimizer = optim.SGD(classifier.parameters(), lr=lr, momentum=0.9, weight_decay=0.0005)
 else:
     classifier = BackBone(number_of_classes)
     loss_function = nn.CrossEntropyLoss()
