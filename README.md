@@ -24,18 +24,18 @@ I implemented an online triplet mining strategy. That is, we extract the embeddi
 
 If we do not find any negatives satisfying the active policy, the one minimizing $\Vert f(x_a) - f(x_n)\Vert^2$ is choosen to prevent NaNs.
 
-Without these mining policies, the model collapsed. That is, it was satisfied with learning $f(x)=0$ as the loss converged to the value of $m$. To prevent collapse, we train the model for 50 epochs using different combinations of the above policies:
+Without these mining policies, the model collapsed. That is, it was satisfied with learning $f(x)=0$ as the loss converged to the value of $m$. To prevent collapse, we train the model for 35 epochs using different combinations of the above policies:
 
-1. Epoch 0 to 14: Easy positives and semi-hard negatives.
-2. Epoch 15 to 24: Easy positives and hard negatives.
-3. Epoch 25 to 49: Hard positives and hard negatives.
+1. Epoch 0 to 9: Easy positives and semi-hard negatives.
+2. Epoch 10 to 24: Easy positives and hard negatives.
+3. Epoch 25 to 34: Hard positives and hard negatives.
 
 **Note:** For validation loss, we *always* use hard positives and hard negatives.
 
 The use of easy positives in training was inspired by the paper [Improved Embeddings with Easy Positive Triplet Mining](arxiv.org/abs/1904.04370).
 
 ### Training
-It takes around 12-13 minute to train the model for 50 epochs (when Birget is having a good day) using the above strategy. We used a batch size of 128 and a learning rate of $14\cdot10^{-4}$ with the Adam optimizer. A margin of $m=0.5$ was used for this run, but different values such as 0.3 and 0.2 also give good results.
+It takes around 12 minutes to train the model for 35 epochs (when Birget is having a good day) using the above strategy. We used a batch size of 128 and a learning rate of $14\cdot10^{-4}$ with the Adam optimizer. A margin of $m=0.5$ was used for this run, but different values such as 0.3 and 0.2 also give good results.
  
 ![Loss Plot](figs/triplet_loss/training_plot.png)
 

@@ -1,6 +1,6 @@
 # Settings triplet loss contrastive learning
 batch_size = 128 
-epochs = 50 
+epochs = 35 
 lr = 0.0014
 val = 0.05 #Use 5% for validation data 
 test = 0.2 #Use 20% for test data
